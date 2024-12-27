@@ -1,0 +1,37 @@
+#include <iostream>
+#include <algorithm>
+using namespace std;
+
+struct TreeNode {
+    int val;
+    TreeNode *left, *right;
+    TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+};
+
+int maxPathSumHelper(TreeNode* root, int& maxSum) {
+    if (!root) return 0;
+
+    int leftSum = max(0, maxPathSumHelper(root->left, maxSum));  // Ignore negative paths
+    int rightSum = max(0, maxPathSumHelper(root->right, maxSum));
+    maxSum = max(maxSum, leftSum + rightSum + root->val);  // Update maximum path sum
+
+    return root->val + max(leftSum, rightSum);  // Return the max path sum including current node
+}
+
+int maxPathSum(TreeNode* root) {
+    int maxSum = INT_MIN;
+    maxPathSumHelper(root, maxSum);
+    return maxSum;
+}
+
+// Example Usage
+int main() {
+    TreeNode* root = new TreeNode(-10);
+    root->left = new TreeNode(9);
+    root->right = new TreeNode(20);
+    root->right->left = new TreeNode(15);
+    root->right->right = new TreeNode(7);
+
+    cout << "Maximum Path Sum: " << maxPathSum(root) << endl;  // Output: 42
+    return 0;
+}
